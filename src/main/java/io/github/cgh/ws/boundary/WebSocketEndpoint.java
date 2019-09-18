@@ -1,4 +1,6 @@
-package io.github.cgh.ws;
+package io.github.cgh.ws.boundary;
+
+import io.github.cgh.ws.entity.Job;
 
 import javax.inject.Inject;
 import javax.websocket.OnClose;
@@ -17,7 +19,7 @@ public class WebSocketEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("job-id") String jobId) {
-        sessionHandler.register(session, new JobId(jobId));
+        sessionHandler.register(session, new Job(jobId));
     }
 
     @OnClose

@@ -1,16 +1,16 @@
-package io.github.cgh.ws;
+package io.github.cgh.ws.entity;
 
 import java.util.Objects;
 
-class JobId {
+public class Job {
 
     private final String id;
 
-    JobId(String id) {
+    public Job(String id) {
         this.id = Objects.requireNonNull(id);
     }
 
-    String value() {
+    public String id() {
         return id;
     }
 
@@ -18,7 +18,7 @@ class JobId {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JobId jobId = (JobId) o;
+        Job jobId = (Job) o;
         return id.equals(jobId.id);
     }
 
