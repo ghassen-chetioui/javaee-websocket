@@ -15,22 +15,22 @@ import java.util.logging.Logger;
 public class WebSocketEndpoint {
 
     @Inject
-    SessionHandler sessionHandler;
+    Notifier notifier;
 
     @OnOpen
     public void onOpen(Session session, @PathParam("job-id") String jobId) {
-        sessionHandler.register(session, new Job(jobId));
+        notifier.register(session, new Job(jobId));
     }
 
     @OnClose
     public void onClose(Session session) {
-        sessionHandler.unregister(session);
+        notifier.unregister(session);
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
         Logger.getLogger(WebSocketEndpoint.class.getSimpleName()).severe(throwable.getLocalizedMessage());
-        sessionHandler.unregister(session);
+        notifier.unregister(session);
     }
 
 }

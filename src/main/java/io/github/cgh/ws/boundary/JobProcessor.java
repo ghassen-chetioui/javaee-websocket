@@ -10,24 +10,24 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 @Stateless
-public class JobProcessor {
+class JobProcessor {
 
     @Resource
     ManagedExecutorService managedExecutorService;
 
     @Inject
-    SessionHandler sessionHandler;
+    Notifier notifier;
 
-    public void process(String jobId) {
+    void process(String jobId) {
         Job job = new Job(jobId);
         CompletableFuture.runAsync(() -> {
             try {
                 Logger.getLogger(JobProcessor.class.getSimpleName()).info("Doing some slow treatment...");
-                Thread.sleep(2000);
+                Thread.sleep(3000);
                 Logger.getLogger(JobProcessor.class.getSimpleName()).info("Job terminated...");
             } catch (InterruptedException e) {
                 Logger.getLogger(JobProcessor.class.getSimpleName()).severe(e.getLocalizedMessage());
             }
-        }, managedExecutorService).thenAccept(nothing -> sessionHandler.notifyJobCompletedAndUnregister(job));
+        }, managedExecutorService).thenAccept(nothing -> notifier.notifyJobCompletedAndUnregister(job));
     }
 }
