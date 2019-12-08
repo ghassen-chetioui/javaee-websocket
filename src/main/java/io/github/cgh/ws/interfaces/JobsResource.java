@@ -1,4 +1,6 @@
-package io.github.cgh.ws.boundary;
+package io.github.cgh.ws.interfaces;
+
+import io.github.cgh.ws.application.JobProcessor;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

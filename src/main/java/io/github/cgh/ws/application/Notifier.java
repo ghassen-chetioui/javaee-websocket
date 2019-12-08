@@ -1,4 +1,4 @@
-package io.github.cgh.ws.boundary;
+package io.github.cgh.ws.application;
 
 import io.github.cgh.ws.entity.Job;
 
@@ -14,17 +14,16 @@ import java.util.logging.Logger;
 import static java.lang.String.format;
 
 @ApplicationScoped
-class Notifier {
+public class Notifier {
 
     private Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
 
-    void register(Session session, Job job) {
-        session.getUserProperties().put("jobId", job.id());
+    public void register(Session session) {
         sessions.add(session);
-        Logger.getLogger(Notifier.class.getSimpleName()).info(format("Session %s registered for job %s completion", session.getId(), job.id()));
+        Logger.getLogger(Notifier.class.getSimpleName()).info(format("Session %s is registered", session.getId()));
     }
 
-    void unregister(Session session) {
+    public void unregister(Session session) {
         try {
             if (sessions.remove(session)) {
                 session.close();
@@ -35,19 +34,14 @@ class Notifier {
         }
     }
 
-    void notifyJobCompletedAndUnregister(Job job) {
+    public void notifyJobCompleted(Job job) {
         Logger.getLogger(Notifier.class.getSimpleName()).info(format("Notify job %s completion", job.id()));
-        sessions.stream().filter(session -> job.id().equals(session.getUserProperties().get("jobId")))
-                .findFirst()
-                .ifPresent(session -> {
-                    notifyJobCompleted(session, job);
-                    unregister(session);
-                });
+        sessions.forEach(session -> notifyJobCompleted(session, job));
     }
 
     private void notifyJobCompleted(Session session, Job job) {
         try {
-            session.getBasicRemote().sendText(format("Job %s is completed", job.id()));
+            session.getBasicRemote().sendText(job.id());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

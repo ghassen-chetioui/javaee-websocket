@@ -1,4 +1,4 @@
-package io.github.cgh.ws.boundary;
+package io.github.cgh.ws.application;
 
 import io.github.cgh.ws.entity.Job;
 
@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 @Stateless
-class JobProcessor {
+public class JobProcessor {
 
     @Resource
     ManagedExecutorService managedExecutorService;
@@ -18,7 +18,7 @@ class JobProcessor {
     @Inject
     Notifier notifier;
 
-    void process(String jobId) {
+    public void process(String jobId) {
         Job job = new Job(jobId);
         CompletableFuture.runAsync(() -> {
             try {
@@ -28,6 +28,6 @@ class JobProcessor {
             } catch (InterruptedException e) {
                 Logger.getLogger(JobProcessor.class.getSimpleName()).severe(e.getLocalizedMessage());
             }
-        }, managedExecutorService).thenAccept(nothing -> notifier.notifyJobCompletedAndUnregister(job));
+        }, managedExecutorService).thenAccept(nothing -> notifier.notifyJobCompleted(job));
     }
 }
